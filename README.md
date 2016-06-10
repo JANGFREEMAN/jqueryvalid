@@ -33,7 +33,7 @@ js代码调用代码：
     });
 </script>
 ```
-`Validator.init(form,function(input,errmsg){})`,form参数表示的表单对象(如果页面上有多个表单，支持多表单验证)，回调函数：`function(input,errmsg){}`的input表示的是验证失败的input对象，errMsg表示的是验证失败消息。
+`Validator.init(form,function(input,errmsg){})`,form参数表示的表单对象(如果页面上有多个表单，支持多表单验证)，回调函数：`function(input,errmsg){}`的input表示的是验证失败的input对象，errMsg是数组类型存放的是验证失败信息。
 上述所说的对象都是jQuery对象，在回调函数中可以通过jQuery对象的方法对输入框操作。
 
 #3.所有验证规则

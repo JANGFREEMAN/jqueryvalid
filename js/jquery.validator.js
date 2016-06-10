@@ -36,10 +36,10 @@
             return validInput;
         },
         validatorInput:function(input){
-            var rules = input.attr("rule"),
-                ruleArr = rules.split(/\s+/),
+            var rules = input.attr("rule") != "undefined"?input.attr("rule"):"",
+                ruleArr = rules != ""?rules.split(/\s+/):[],
                 errorMsg = [],
-                regexp = ""
+                regexp = "",
                 msg = "";
 
             /**

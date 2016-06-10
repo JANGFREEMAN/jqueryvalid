@@ -38,7 +38,13 @@
         validatorInput:function(input){
             var rules = input.attr("rule"),
                 ruleArr = rules.split(/\s+/),
-                errorMsg = [];
+                errorMsg = [],
+                regexp = ""
+                msg = "";
+
+            /**
+             * 验证内部验证规则
+             */
             for(i = 0 ; i < ruleArr.length; i++){
                 if(Validator.rules[ruleArr[i]] != ""){
                     var regex = Validator.rules[ruleArr[i]],
@@ -48,6 +54,18 @@
                     }
                 }
             }
+
+            /**
+             * 验证自定义规则
+             */
+            regexp =input.attr("regexp");
+            msg = input.attr("msg");
+            var pat =  new RegExp(regexp);
+            if(!pat.test(input.val())){
+                errorMsg.push(msg);
+            }
+
+
             return errorMsg;
         },
         validator:function(form,callBack){

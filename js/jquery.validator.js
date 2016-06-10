@@ -36,15 +36,15 @@
             return validInput;
         },
         validatorInput:function(input){
-            var classes = input.attr("class"),
-                classArr = classes.split(/\s+/),
+            var rules = input.attr("rule"),
+                ruleArr = rules.split(/\s+/),
                 errorMsg = [];
-            for(i = 0 ; i < classArr.length; i++){
-                if(Validator.rules[classArr[i]] != ""){
-                    var regex = Validator.rules[classArr[i]],
+            for(i = 0 ; i < ruleArr.length; i++){
+                if(Validator.rules[ruleArr[i]] != ""){
+                    var regex = Validator.rules[ruleArr[i]],
                         val = input.val();
                     if(!regex.test(val)){
-                        errorMsg.push(Validator.msg[classArr[i]]);
+                        errorMsg.push(Validator.msg[ruleArr[i]]);
                     }
                 }
             }

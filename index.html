@@ -7,9 +7,9 @@
     <script src="./js/jquery.validator.js"></script>
 </head>
 <body>
-<form id = "myform">
+<form id = "myform" setting = "{'onsubmit':trues}">
     <input type = "text" name = "telphone" rule = "" regexp = "^\d+$" msg = "测试" validator = "true">
-    <input type = "text" name = "money" rule = "money "validator = "true">
+    <input type = "text" name = "money" rule = "money notempty "validator = "true">
 </form>
     <script>
         $(function(){

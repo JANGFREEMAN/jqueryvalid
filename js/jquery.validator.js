@@ -3,8 +3,21 @@
  */
 ;(function($){
 
-    var Validator = function(form,callBack){
+    var Validator = function(form,setting,callBack){
+        /**
+         * 合并参数
+         */
+        $.extend(Validator.setting,setting);
+
+        /**
+         * 表单验证
+         */
         this.validator(form,callBack);
+
+        /**
+         * 表单提交前是否再一次验证
+         */
+        this.submit(form,callBack);
     };
 
     /**
@@ -28,7 +41,6 @@
     };
 
     /**
-     *
      * 这边定义一些常量
      */
     Validator.VALIDATOR = "validator";
@@ -37,6 +49,13 @@
     Validator.REGEXP = "regexp";
 
 
+    /**
+     * 表单默认配置项
+     */
+    Validator.setting = {
+        onSubmit:true,//表单提交前是否再次验证表单 true or false
+        when:"keyup"//什么时候验证输入域 keyup or click or focus or blur
+    }
 
     Validator.prototype = {
         //获取需要校验的输入域
@@ -95,19 +114,35 @@
                 validatorFields = this.getValidatorFields(form);
             for(var i = 0 ; i < validatorFields.length ; i++){
                 var field = validatorFields[i];
-                field.on("keyup",function(){
+                field.on(Validator.setting.when,function(){
                     var msg =  that.validatorField($(this));
                     if(msg.length > 0 ){
                         callBack(field,msg);
                     }
                 });
             }
+        },
+        submit:function(form,callBack){
+            var sub = form.find('[type = "submit"]'),
+                that = this;
+            sub.on("click",function(){
+                if(Validator.setting.onSubmit){
+                    var validatorFields = that.getValidatorFields(form);
+                    for(var i = 0 ; i < validatorFields.length ; i++){
+                        var field = validatorFields[i];
+                        var msg =  that.validatorField(field);
+                        if(msg.length > 0 ){
+                            callBack(field,msg);
+                        }
+                    }
+                }
+            });
         }
     }
 
-    Validator.init = function(forms,callBack){
+    Validator.init = function(forms,setting,callBack){
         forms.each(function(index,item){
-           new Validator($(this),callBack);
+           new Validator($(this),setting,callBack);
         });
     }
     window["Validator"] = Validator;

@@ -7,15 +7,17 @@
     <script src="./js/jquery.validator.js"></script>
 </head>
 <body>
-<form id = "myform" setting = "{'onsubmit':trues}">
+<form id = "myform" onsubmit = "return false" action = "https://www.baidu.com">
     <input type = "text" name = "telphone" rule = "" regexp = "^\d+$" msg = "测试" validator = "true">
     <input type = "text" name = "money" rule = "money notempty "validator = "true">
+    <input type = "submit" value = "提交">
 </form>
     <script>
         $(function(){
-            Validator.init($("#myform"),function(input,errmsg){
-                console.log(input.attr("name"));
-                console.log(errmsg);
+            Validator.init($("#myform"),{onSubmit:true,when:"blur"},function(field,errMsg){
+                console.log(field);
+                console.log(errMsg);
+                $("#myform").submit();
             });
         });
     </script>

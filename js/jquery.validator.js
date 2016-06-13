@@ -17,7 +17,7 @@
     Validator.msg = {
         int:"请输入整数",
         float:"请输入小数",
-        money:"金额",
+        money:"金额格式不正确",
         tel:"电话号码格式不正确"
     }
 
@@ -27,7 +27,7 @@
             var validInput = [];
             inputs.each(function(index,item){
                 var value = $(this).attr("validator");
-                if(value.length > 0){
+                if(value != "undefined"){
                     if(value == "true"){
                         validInput.push($(this));
                     }

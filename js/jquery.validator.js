@@ -9,9 +9,9 @@
 
     Validator.rules = {
         int:/^\d+$/,
-        float:/^\d+\.\d{2}$/,
-        money:"1",
-        tel:"1"
+        float:/^\d+(\.\d+)?$/,
+        money:/^\d+(\.\d{2})?$/,
+        ip:"/^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$/"
     }
 
     Validator.msg = {
@@ -64,8 +64,6 @@
             if(!pat.test(input.val())){
                 errorMsg.push(msg);
             }
-
-
             return errorMsg;
         },
         validator:function(form,callBack){

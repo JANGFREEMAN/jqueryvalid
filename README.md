@@ -11,8 +11,8 @@ html代码的基本结构如下：
 
 ``` html
 <form id = "myform">
-    <input type = "text" rule = "int"  validator = "true">
-    <input type = "text" regexp = "^\\d+$" msg = "测试" validator = "true">
+    <input type = "text" name = "telphone" rule = "" regexp = "^\d+$" msg = "测试" validator = "true">
+    <input type = "text" name = "money" rule = "money "validator = "true">
 </form>
 ``` 
 
@@ -26,16 +26,24 @@ msg属性值为当自定义规则不通过之后的错误提示消息。
 js代码调用代码：
 
 ```javascript
-<script>
-    $(function(){
-        Validator.init($("#myform"),function(input,errmsg){
-            console.log(input);
-            console.log(errmsg);
+    <script>
+        $(function(){
+            Validator.init($("#myform"),function(input,errmsg){
+                console.log(input.attr("name"));
+                console.log(errmsg);
+            });
         });
-    });
-</script>
+    </script>
 ```
 `Validator.init(form,function(input,errmsg){})`,form参数表示的表单对象(如果页面上有多个表单，支持多表单验证)，回调函数：`function(input,errmsg){}`的input表示的是验证失败的input对象，errMsg是数组类型存放的是验证失败信息。
 上述所说的对象都是jQuery对象，在回调函数中可以通过jQuery对象的方法对输入框操作。
 
 #3.所有验证规则
+```html
+    Validator.rules = {
+        int:/^\d+$/,
+        float:/^\d+(\.\d+)?$/,
+        money:/^\d+(\.\d{2})?$/,
+        ip:"/^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$/"
+    }
+```

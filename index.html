@@ -8,13 +8,27 @@
 </head>
 <body>
 <form id = "myform" onsubmit = "return false" action = "https://www.baidu.com">
-    <input type = "text" name = "telphone" rule = "" regexp = "^\d+$" msg = "测试" validator = "true">
-    <input type = "text" name = "money" rule = "money notempty "validator = "true">
+    <div style = "margin: 20px;">
+        <label >内置验证规则:</label>
+        <input type = "text"  rule = "required"  validator = "true" id = "test">
+    </div>
+    <div style = "margin: 20px;">
+          <label >自定义规则:</label>
+          <input type = "text"  regexp = "^\d+$"  msg = "只能输入数字"  validator = "true"><br/>
+    </div>
+    <div style = "margin: 20px;">
+        <label >异步验证:</label>
+        <input type = "text"  validator-url = "......." validator = "true"><br/>
+    </div>
+    <div style = "margin: 20px;">
+        <label >三种规则一起验证:</label>
+        <input type = "text" rule = "int" regexp = /^\d{0,3}$/  msg = "超出精度了"  validator-url = "......" validator = "true"><br/>
+    </div>
     <input type = "submit" value = "提交">
 </form>
     <script>
         $(function(){
-            Validator.init($("#myform"),{onSubmit:true,when:"blur"},function(field,errMsg){
+            Validator.init($("#myform"),{onSubmit:true,immediately:true},function(field,errMsg){
                 console.log(field);
                 console.log(errMsg);
                 $("#myform").submit();

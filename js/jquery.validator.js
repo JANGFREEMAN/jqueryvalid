@@ -29,7 +29,7 @@
         float:/^\d+(\.\d+)?$/,
         money:/^\d+(\.\d{1,2})?$/,
         ip:"/^((2[0-4]\d|25[0-5]|[01]?\d\d?)\.){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)$/",
-        notempty:/^.+$/
+        required:/^.+$/
     }
 
     Validator.msg = {
@@ -37,7 +37,7 @@
         float:"请输入小数",
         money:"金额格式不正确",
         ip:"ip格式不正确",
-        notempty:"不能为空"
+        required:"不能为空"
     };
 
     /**
@@ -47,6 +47,7 @@
     Validator.RULE = "rule";
     Validator.MSG = "msg";
     Validator.REGEXP = "regexp";
+    Validator.URL = "validator-url";
 
 
     /**
@@ -54,7 +55,7 @@
      */
     Validator.setting = {
         onSubmit:true,//表单提交前是否再次验证表单 true or false
-        when:"keyup"//什么时候验证输入域 keyup or click or focus or blur
+        immediately:true//什么时候验证输入域 keyup or click or focus or blur
     }
 
     Validator.prototype = {
@@ -82,13 +83,19 @@
             return validField;
         },
         validatorField:function(field){
+            /**
+             *  验证规则的顺序：
+             *      1.先验证内部规则
+             *      2.然后在验证自定义规则
+             *      3.然后再执行异步验证
+             */
             var rules = field.attr(Validator.RULE) != "undefined"?$.trim(field.attr(Validator.RULE)):"",
                 ruleArr = rules != ""?rules.split(/\s+/):[],
                 errorMsg = [],
                 regexp;
 
             /**
-             * 验证内部验证规则
+             *  1.验证内部验证规则
              */
             for(var i = 0 ; i < ruleArr.length; i++){
                 if(Validator.rules[ruleArr[i]] != ""){
@@ -100,12 +107,32 @@
             }
 
             /**
-             * 验证自定义规则
+             * 2.验证自定义规则
              */
-            regexp = $.trim(field.attr(Validator.REGEXP));
-            var pat =  new RegExp(regexp);
-            if(!pat.test(field.val())){
-                errorMsg.push(field.attr(Validator.MSG));
+            if(field.attr(Validator.REGEXP) != undefined){
+                regexp = $.trim(field.attr(Validator.REGEXP));
+                var pat =  new RegExp(regexp);
+                if(!pat.test(field.val())){
+                    errorMsg.push(field.attr(Validator.MSG));
+                }
+            }
+
+            /**
+             * 3.异步验证
+             */
+            var that  = field;
+            if(field.attr(Validator.URL) != undefined){
+                $.ajax({
+                    type: "POST",
+                    url: Validator.URL,
+                    data: that.val(),
+                    dataType: "text",
+                    success: function(msg){
+                        if(msg.length > 0){
+                            errorMsg.push(msg);
+                        }
+                    }
+                });
             }
             return errorMsg;
         },
@@ -114,12 +141,41 @@
                 validatorFields = this.getValidatorFields(form);
             for(var i = 0 ; i < validatorFields.length ; i++){
                 var field = validatorFields[i];
-                field.on(Validator.setting.when,function(){
-                    var msg =  that.validatorField($(this));
-                    if(msg.length > 0 ){
-                        callBack(field,msg);
+                field.on({
+                    click:function(){
+                      if(Validator.setting.immediately){
+                          that.validatorField_($(this),callBack);
+                      }
+                    },
+                    focus:function(){
+                        if(Validator.setting.immediately){
+                            that.validatorField_($(this),callBack);
+                        }
+                    },
+                    blur:function(){
+                        if(Validator.setting.immediately){
+                            that.validatorField_($(this),callBack);
+                        }else{
+                            that.validatorField_($(this),callBack);
+                        }
+                    },
+                    keyup:function(){
+                        if(Validator.setting.immediately){
+                            that.validatorField_($(this),callBack);
+                        }
+                    },
+                    change:function(){
+                        if(Validator.setting.immediately){
+                            that.validatorField_($(this),callBack);
+                        }
                     }
-                });
+                })
+            }
+        },
+        validatorField_:function(field,callBack){
+            var msg =  this.validatorField(field);
+            if(msg.length > 0 ){
+                callBack(field,msg);
             }
         },
         submit:function(form,callBack){
